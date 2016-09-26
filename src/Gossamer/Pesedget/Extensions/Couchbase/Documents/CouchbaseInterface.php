@@ -1,5 +1,4 @@
 <?php
-
 /*
  *  This file is part of the Quantum Unit Solutions development package.
  * 
@@ -8,16 +7,17 @@
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
-namespace core\components\locales\entities\Locale;
 
-use Gossamer\Pesedget\Entities\AbstractEntity;
-use Gossamer\Pesedget\Database\SQLInterface;
-
-/**
- * Locale
- *
- * @author Dave Meikle
+/** *
+ * Author: dave
+ * Date: 9/26/2016
+ * Time: 3:37 PM
  */
-class Locale extends AbstractEntity implements SQLInterface {
-    
+
+namespace Gossamer\Pesedget\Extensions\Couchbase\Documents;
+
+
+interface CouchbaseInterface
+{
+
 }
