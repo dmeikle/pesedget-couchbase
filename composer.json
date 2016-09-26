@@ -25,7 +25,7 @@
   },
   "autoload": {
     "psr-0": {
-      "Gossamer\\Pesedget\\Couchbase": "src/"
+      "Gossamer\\Pesedget\\Extensions\\Couchbase": "src/"
     }
   }
 }
