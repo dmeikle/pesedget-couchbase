@@ -20,6 +20,8 @@ namespace Gossamer\Pesedget\Extensions\Couchbase\Documents;
 class Document
 {
 
+    protected $documentChanged = false;
+
     protected $tablename;
 
     /**
@@ -29,6 +31,7 @@ class Document
      */
     protected $fields = array('id');
 
+    protected $values = array();
 
 
     public function __construct(){
@@ -52,6 +55,17 @@ class Document
         return $this->tablename;
     }
 
+    public function getDocumentIdentifier(){
+        return strtolower($this->tablename) . '::' . $this->getId();
+    }
+
+    public function getId() {
+        if(!array_key_exists('id',$this->values)) {
+            return '';
+        }
+
+        return $this->values['id'];
+    }
 
     public function getClassName() {
         $reflect = new \ReflectionClass($this);
@@ -77,5 +91,35 @@ class Document
 
             $this->set($key, $value);
         }
+    }
+
+
+    public function populateNested(array $params, array $schema) {
+        $this->values = array_intersect_key($params, $schema);
+    }
+
+    public function get($key)
+    {
+        if (isset($this->values[$key])) {
+            return $this->values[$key];
+        }
+
+        return null;
+    }
+
+    public function set($key, $value) {
+        if(!$this->documentChanged && !isset($this->fields[$key]) || $this->fields[$key] != $value) {
+            $this->documentChanged = true;
+        }
+
+        $this->values[$key] = $value;
+    }
+
+    public function getAll() {
+        return $this->values;
+    }
+
+    public function toJson() {
+        return json_encode($this->getAll());
     }
 }
