@@ -71,7 +71,7 @@ class CouchbaseDBConnection implements NoSQLConnectionInterface, GossamerDBConne
                 $bucketName = $this->getCredential('dbName');
             }
             if(!array_key_exists($bucketName, $this->buckets)) {
-                $this->buckets[$bucketName] = new Bucket($this->getCouchBaseCluster()->openBucket($bucketName));
+                $this->buckets[$bucketName] = $this->getCouchBaseCluster()->openBucket($bucketName);
             }
 
             return $this->buckets[$bucketName];
