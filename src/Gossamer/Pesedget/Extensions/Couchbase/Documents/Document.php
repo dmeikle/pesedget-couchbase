@@ -51,11 +51,11 @@ class Document
         return array_pop($chunks);
     }
 
-    public function getTableName(){
+    public function getIdentityField(){
         return $this->tablename;
     }
 
-    public function getDocumentIdentifier(){
+    public function getDocumentKey(){
         return strtolower($this->tablename) . '::' . $this->getId();
     }
 
