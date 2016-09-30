@@ -64,7 +64,7 @@ class CouchbaseDBConnection implements NoSQLConnectionInterface, GossamerDBConne
     }
 
 
-    public function getConnection($bucketName = null)
+    public function getBucket($bucketName = null)
     {
 
             if(is_null($bucketName)) {
