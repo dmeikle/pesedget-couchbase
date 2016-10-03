@@ -80,6 +80,7 @@ class Document
      * @param array|null $fields - the field names to look for in the array
      */
     public function populate(array $params, array $fields = null) {
+
         if(!is_null($fields)) {
             $this->fields = $fields;
         }
@@ -121,5 +122,9 @@ class Document
 
     public function toJson() {
         return json_encode($this->getAll());
+    }
+
+    public function toArray() {
+        return $this->getAll(); 
     }
 }
