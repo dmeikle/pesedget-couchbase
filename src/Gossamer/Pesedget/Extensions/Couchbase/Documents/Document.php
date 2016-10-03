@@ -109,7 +109,7 @@ class Document
     }
 
     public function set($key, $value) {
-        if(!$this->documentChanged && !isset($this->fields[$key]) || $this->fields[$key] != $value) {
+        if(!$this->documentChanged && (!array_key_exists($key, $this->fields) || !isset($this->fields[$key]) || $this->fields[$key] != $value)) {
             $this->documentChanged = true;
         }
 
@@ -125,6 +125,6 @@ class Document
     }
 
     public function toArray() {
-        return $this->getAll(); 
+        return $this->getAll();
     }
 }
