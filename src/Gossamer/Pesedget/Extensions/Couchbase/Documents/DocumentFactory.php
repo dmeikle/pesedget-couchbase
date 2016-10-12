@@ -31,9 +31,10 @@ class DocumentFactory
     }
 
     public function getSchema(Document $document, $filepath) {
-        $this->loader->setFilepath($filepath);
-        $config = $this->loader->loadConfig();
-        
+        $loader = new YAMLParser();
+        $loader->setFilepath($filepath);
+        $config = $loader->loadConfig();
+
         if(!is_array($config)) {
             throw new ConfigurationNotFoundException($filepath . ' not found');
         }

@@ -96,8 +96,33 @@ class Document
 
 
     public function populateNested(array $params, array $schema) {
-        $this->values = array_intersect_key($params, $schema);
+        //first do the main fields
+
+        foreach($schema['fields'] as $key) {
+            if(array_key_exists($key, $params)) {
+                $this->set($key, $params[$key]);
+            }
+        }
+$joins = $schema['joins'];
+        //now do the join fields
+        foreach($joins[0] as $documentName => $fields) {
+
+            if(array_key_exists($documentName, $params)) {
+                $subarray = array();
+
+                foreach($params[$documentName] as $key => $value) {
+                    
+                    if(in_array($key, $fields)) {
+                        $subarray[$key] = $value;
+                    }
+                }
+                $this->set($documentName, $subarray);
+            }
+        }
     }
+
+
+
 
     public function get($key)
     {
