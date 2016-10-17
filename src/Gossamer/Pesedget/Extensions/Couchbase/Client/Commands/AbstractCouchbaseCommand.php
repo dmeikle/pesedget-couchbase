@@ -71,7 +71,7 @@ class AbstractCouchbaseCommand extends AbstractCommand
     }
 
 
-    public function getBucket()
+    protected function getBucket()
     {
         if (is_null($this->connection)) {
             $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
@@ -81,17 +81,30 @@ class AbstractCouchbaseCommand extends AbstractCommand
         return $this->connection;
     }
 
-    public function getBucketName()
+    protected function getBucketName()
     {
+        $config = $this->httpRequest->getAttribute('CLIENT_SERVER_DB_CONFIG');
+
+        if(!is_null($config)) {
+            return $config['bucketName'];
+        }
+
         $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
 
         return $this->container->get('EntityManager')->getConnection($connName)->getCredential('dbName');
     }
 
 
+    protected function getMasterBucketName() {
+        $config = $this->httpRequest->getAttribute('CLIENT_SERVER_DB_CONFIG');
+
+        if(!is_null($config)) {
+            return $config['masterBucketName'];
+        }
+    }
 
 
-    public function getSchema(Document $document, $filepath) {
+    protected function getSchema(Document $document, $filepath) {
         $loader = new YAMLParser();
         $loader->setFilepath($filepath);
         $config = $loader->loadConfig();
