@@ -121,6 +121,9 @@ class AbstractCouchbaseCommand extends AbstractCommand
 
 
     protected function resultsToArray($results) {
+        if(!is_object($results)) {
+            return array();
+        }
         return json_decode(json_encode($results->rows),TRUE);
     }
 
