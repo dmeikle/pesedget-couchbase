@@ -19,13 +19,5 @@ namespace Gossamer\Pesedget\Extensions\Couchbase\Client\Commands;
 
 class AbstractCouchbaseGetCommand extends AbstractCouchbaseCommand
 {
-    protected function getFilter(array $params) {
-        $retval = '';
-        foreach ($params as $key => $value) {
-            $retval .= " AND ($key = '$value')";
-        }
-
-        return $retval;
-    }
 
 }

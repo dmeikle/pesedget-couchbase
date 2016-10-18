@@ -123,4 +123,14 @@ class AbstractCouchbaseCommand extends AbstractCommand
     protected function resultsToArray($results) {
         return json_decode(json_encode($results->rows),TRUE);
     }
+
+
+    protected function getFilter(array $params) {
+        $retval = '';
+        foreach ($params as $key => $value) {
+            $retval .= " AND ($key = '$value')";
+        }
+
+        return $retval;
+    }
 }
