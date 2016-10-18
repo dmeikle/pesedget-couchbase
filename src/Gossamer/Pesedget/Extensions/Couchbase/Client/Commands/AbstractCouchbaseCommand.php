@@ -34,7 +34,7 @@ class AbstractCouchbaseCommand extends AbstractCommand
 
     protected $bucketName;
 
-    private $connection = null;
+    private $bucket = null;
 
     public function __construct(SQLInterface $entity, HTTPRequest &$request, $credentials = null, GossamerDBConnection $connection = null)
     {
@@ -51,7 +51,7 @@ class AbstractCouchbaseCommand extends AbstractCommand
             //$this->dbConnection = new DBConnection($credentials);
         } elseif (!is_null($connection)) {
 
-            $this->dbConnection = $connection;
+            $this->bucket = $connection->getBucket();
         }
         $this->httpRequest = $request;
         $this->entity = $entity;
@@ -73,12 +73,12 @@ class AbstractCouchbaseCommand extends AbstractCommand
 
     protected function getBucket()
     {
-        if (is_null($this->connection)) {
+        if (is_null($this->bucket)) {
             $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
-            $this->connection = $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->bucketName);
+            $this->bucket = $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->bucketName);
         }
 
-        return $this->connection;
+        return $this->bucket;
     }
 
     protected function getBucketName()

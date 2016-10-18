@@ -25,9 +25,7 @@ class AbstractCouchbaseGetCommand extends AbstractCouchbaseCommand
             $retval .= ", ($key = '$value')";
         }
 
-        if(strlen($retval) > 0) {
-            return ' AND ' .substr($retval, 1);
-        }
+        return $retval;
     }
 
 }
