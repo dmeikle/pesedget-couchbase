@@ -22,7 +22,7 @@ class AbstractCouchbaseListCommand extends AbstractCouchbaseCommand
 
 
     protected function getTotalRowCount(array $params) {
-        $queryString = "SELECT count(id) as rowCount FROM `BHDB6` WHERE type ='" . $this->entity->getIdentityField() .
+        $queryString = "SELECT count(id) as rowCount FROM `" . $this->getBucketName() . "` WHERE type ='" . $this->entity->getIdentityField() .
             "' AND isActive = '1'";
 
 
