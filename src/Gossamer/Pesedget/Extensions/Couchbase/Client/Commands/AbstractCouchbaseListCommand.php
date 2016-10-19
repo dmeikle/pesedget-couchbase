@@ -21,15 +21,29 @@ class AbstractCouchbaseListCommand extends AbstractCouchbaseCommand
 {
 
 
-    protected function getTotalRowCount(array $params) {
-        $queryString = "SELECT count(id) as rowCount FROM `" . $this->getBucketName() . "` WHERE type ='" . $this->entity->getIdentityField() .
-            "' AND isActive = '1'";
-
+    public function execute($params = array(), $request = array())
+    {
+        $queryString = "SELECT * FROM `" . $this->getBucketName() .
+            "` as " . $this->entity->getClassName() . " WHERE type ='" . $this->entity->getIdentityField() . "' AND isActive = '1' " . $this->getOrderBy($params, 'id') .
+            $this->getLimit($params);
 
         $query = \CouchbaseN1qlQuery::fromString($queryString);
+
         $rows = $this->getBucket()->query($query);
 
-        $this->httpRequest->setAttribute( $this->entity->getIdentityField() . 'Count', $this->resultsToArray($rows));
+        $this->httpRequest->setAttribute($this->entity->getIdentityField(),  $this->removeRowHeadings($this->resultsToArray($rows)));
+        $this->getTotalRowCount($params);
+    }
+
+
+    protected function removeRowHeadings(array $result) {
+        $retval = array();
+        foreach($result as $key=> $row) {
+
+            $retval[] = current($row);
+        }
+
+        return $retval;
     }
 
 
