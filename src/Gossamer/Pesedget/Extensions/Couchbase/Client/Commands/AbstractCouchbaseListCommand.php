@@ -24,7 +24,8 @@ class AbstractCouchbaseListCommand extends AbstractCouchbaseCommand
     public function execute($params = array(), $request = array())
     {
         $queryString = "SELECT * FROM `" . $this->getBucketName() .
-            "` as " . $this->entity->getClassName() . " WHERE type ='" . $this->entity->getIdentityField() . "' AND isActive = '1' " . $this->getOrderBy($params, 'id') .
+            "` as " . $this->entity->getClassName() . " WHERE type ='" . $this->entity->getIdentityField() . "' AND isActive = '1' " .
+            $this->getFilter($params) . $this->getOrderBy($params, 'id') .
             $this->getLimit($params);
 
         $query = \CouchbaseN1qlQuery::fromString($queryString);
@@ -35,12 +36,28 @@ class AbstractCouchbaseListCommand extends AbstractCouchbaseCommand
         $this->getTotalRowCount($params);
     }
 
+    public function getTotalRowCount($params = array(), $request = array())
+    {
+        $queryString = "SELECT count('id') as rowCount FROM `" . $this->getBucketName() .
+            "` WHERE type ='" . $this->entity->getIdentityField() . "' AND isActive = '1' " .
+            $this->getFilter($params);
+
+        $query = \CouchbaseN1qlQuery::fromString($queryString);
+
+        $rows = $this->getBucket()->query($query);
+
+        $this->httpRequest->setAttribute($this->entity->getIdentityField(). 'Count',  $this->resultsToArray($rows));
+
+    }
+
+
 
     protected function removeRowHeadings(array $result) {
         $retval = array();
-        foreach($result as $key=> $row) {
 
-            $retval[] = current($row);
+        foreach($result as  $row) {
+            $retval[] = json_decode(json_encode(current($row)),true);
+            unset($row);
         }
 
         return $retval;
