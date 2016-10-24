@@ -20,4 +20,17 @@ namespace Gossamer\Pesedget\Extensions\Couchbase\Client\Commands;
 class AbstractCouchbaseGetCommand extends AbstractCouchbaseCommand
 {
 
+    public function execute($params = array(), $request = array())
+    {
+        $queryString = "SELECT * FROM `" . $this->getBucketName() .
+            "` as " . $this->entity->getClassName() . " WHERE type ='" . $this->entity->getIdentityField() . "' AND isActive = '1' " .
+            $this->getFilter($params) . ' LIMIT 1';
+
+        $query = \CouchbaseN1qlQuery::fromString($queryString);
+
+        $rows = $this->getBucket()->query($query);
+
+        $this->httpRequest->setAttribute($this->entity->getIdentityField(),  $this->resultsToArray($rows));
+
+    }
 }
