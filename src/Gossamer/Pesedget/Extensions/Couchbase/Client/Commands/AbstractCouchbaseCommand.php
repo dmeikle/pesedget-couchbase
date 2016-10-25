@@ -131,7 +131,7 @@ class AbstractCouchbaseCommand extends AbstractCommand
     protected function getFilter(array $params) {
         $retval = '';
         foreach ($params as $key => $value) {
-            if($key == 'locale') {
+            if($key == 'locale' || strpos($key,'directive::') !== false) {
                 continue;
             }
             $retval .= " AND ($key = '$value')";
