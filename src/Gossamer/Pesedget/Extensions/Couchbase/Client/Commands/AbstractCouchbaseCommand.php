@@ -139,4 +139,17 @@ class AbstractCouchbaseCommand extends AbstractCommand
 
         return $retval;
     }
+
+
+
+    protected function removeRowHeadings(array $result) {
+        $retval = array();
+
+        foreach($result as  $row) {
+            $retval[] = json_decode(json_encode(current($row)),true);
+            unset($row);
+        }
+
+        return $retval;
+    }
 }
