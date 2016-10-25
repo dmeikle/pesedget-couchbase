@@ -23,8 +23,8 @@ use core\commands\URI;
 use core\http\HTTPRequest;
 use Gossamer\Pesedget\Database\GossamerDBConnection;
 use Gossamer\Pesedget\Database\SQLInterface;
-use Gossamer\Pesedget\Extensions\Couchbase\Connections\Bucket;
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
+use Gossamer\Pesedget\Extensions\Couchbase\Exceptions\KeyNotFoundException;
 use libraries\utils\YAMLParser;
 use Gossamer\Pesedget\Extensions\Couchbase\Exceptions\ConfigurationNotFoundException;
 
