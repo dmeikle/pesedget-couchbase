@@ -120,12 +120,17 @@ class AbstractCouchbaseCommand extends AbstractCommand
     }
 
 
-    protected function resultsToArray($results) {
+
+    protected function resultsToArray($results, $shiftArray = false) {
         if(!is_object($results)) {
             return array();
         }
+        if($shiftArray) {
+            return current(json_decode(json_encode($results->rows),TRUE));
+        }
         return json_decode(json_encode($results->rows),TRUE);
     }
+
 
 
     protected function getFilter(array $params) {
