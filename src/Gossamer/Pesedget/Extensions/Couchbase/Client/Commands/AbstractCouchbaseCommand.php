@@ -36,6 +36,8 @@ class AbstractCouchbaseCommand extends AbstractCommand
 
     private $bucket = null;
 
+    private $bucketList = array();
+
     public function __construct(SQLInterface $entity, HTTPRequest &$request, $credentials = null, GossamerDBConnection $connection = null)
     {
 
@@ -71,14 +73,20 @@ class AbstractCouchbaseCommand extends AbstractCommand
     }
 
 
-    protected function getBucket()
+    protected function getBucket($masterBucket = false)
     {
-        if (is_null($this->bucket)) {
+
+        if($masterBucket) {
             $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
-            $this->bucket = $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->bucketName);
+
+            return $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->getMasterBucketName());
         }
 
-        return $this->bucket;
+
+        $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
+
+        return $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->getBucketName());
+
     }
 
     protected function getBucketName()
@@ -120,17 +128,21 @@ class AbstractCouchbaseCommand extends AbstractCommand
     }
 
 
-
     protected function resultsToArray($results, $shiftArray = false) {
         if(!is_object($results)) {
             return array();
         }
         if($shiftArray) {
-            return current(json_decode(json_encode($results->rows),TRUE));
+            if(isset($results->rows)) {
+                return current(json_decode(json_encode($results->rows),TRUE));
+            }
+            return current(json_decode(json_encode($results->values),TRUE));
         }
-        return json_decode(json_encode($results->rows),TRUE);
+        if(isset($results->rows)) {
+            return json_decode(json_encode($results->rows),TRUE);
+        }
+        return json_decode(json_encode($results->value),TRUE);
     }
-
 
 
     protected function getFilter(array $params) {

@@ -38,11 +38,12 @@ class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
         $this->httpRequest->setAttribute($this->entity->getClassName(), json_decode(json_encode($result->value),TRUE));
     }
 
-    protected function populateDocument(Document $document, array $request) {
+    protected function populateDocument(Document &$document, array $request) {
         $filepath = __COMPONENT_FOLDER . '/config/schemas.yml';
 
         $schema = $this->getSchema($document, $filepath);
-        $this->entity->populate($request, $schema);
+
+        $document->populate($request, $schema);
     }
 
     protected function prepare(Document $document, array &$params)
@@ -80,12 +81,13 @@ class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
     protected function setDocumentId(Document $document, array &$params)
     {
         if (array_key_exists('id', $params) && strlen($params['id']) > 0) {
+
             return;
         }
 
         $counter = $this->getBucket()->counter($document->getDocumentKey(), 1, array('initial' => 100));
-
         $params['id'] = $document->getDocumentKey() . $counter->value;
+
 
 //        try {
 //            // Do not override default name, fail if it is exists already, and wait for completion
