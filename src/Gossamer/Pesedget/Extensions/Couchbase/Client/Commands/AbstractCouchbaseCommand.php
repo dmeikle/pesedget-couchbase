@@ -76,7 +76,7 @@ class AbstractCouchbaseCommand extends AbstractCommand
     protected function getBucket($masterBucket = false)
     {
 
-        if($masterBucket) {
+        if ($masterBucket) {
             $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
 
             return $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->getMasterBucketName());
@@ -93,7 +93,7 @@ class AbstractCouchbaseCommand extends AbstractCommand
     {
         $config = $this->httpRequest->getAttribute('CLIENT_SERVER_DB_CONFIG');
 
-        if(!is_null($config)) {
+        if (!is_null($config)) {
             return $config['bucketName'];
         }
 
@@ -103,24 +103,26 @@ class AbstractCouchbaseCommand extends AbstractCommand
     }
 
 
-    protected function getMasterBucketName() {
+    protected function getMasterBucketName()
+    {
         $config = $this->httpRequest->getAttribute('CLIENT_SERVER_DB_CONFIG');
 
-        if(!is_null($config)) {
+        if (!is_null($config)) {
             return $config['masterBucketName'];
         }
     }
 
 
-    protected function getSchema(Document $document, $filepath) {
+    protected function getSchema(Document $document, $filepath)
+    {
         $loader = new YAMLParser();
         $loader->setFilepath($filepath);
         $config = $loader->loadConfig();
 
-        if(!is_array($config)) {
+        if (!is_array($config)) {
             throw new ConfigurationNotFoundException($filepath . ' not found');
         }
-        if(!array_key_exists($document->getIdentityField(), $config)) {
+        if (!array_key_exists($document->getIdentityField(), $config)) {
             throw new KeyNotFoundException($document->getIdentityField() . ' not found in configuration');
         }
 
@@ -128,27 +130,29 @@ class AbstractCouchbaseCommand extends AbstractCommand
     }
 
 
-    protected function resultsToArray($results, $shiftArray = false) {
-        if(!is_object($results)) {
+    protected function resultsToArray($results, $shiftArray = false)
+    {
+        if (!is_object($results)) {
             return array();
         }
-        if($shiftArray) {
-            if(isset($results->rows)) {
-                return current(json_decode(json_encode($results->rows),TRUE));
+        if ($shiftArray) {
+            if (isset($results->rows)) {
+                return current(json_decode(json_encode($results->rows), TRUE));
             }
-            return current(json_decode(json_encode($results->values),TRUE));
+            return current(json_decode(json_encode($results->values), TRUE));
         }
-        if(isset($results->rows)) {
-            return json_decode(json_encode($results->rows),TRUE);
+        if (isset($results->rows)) {
+            return json_decode(json_encode($results->rows), TRUE);
         }
-        return json_decode(json_encode($results->value),TRUE);
+        return json_decode(json_encode($results->value), TRUE);
     }
 
 
-    protected function getFilter(array $params) {
+    protected function getFilter(array $params)
+    {
         $retval = '';
         foreach ($params as $key => $value) {
-            if($key == 'locale' || strpos($key,'directive::') !== false) {
+            if ($key == 'locale' || strpos($key, 'directive::') !== false) {
                 continue;
             }
             $retval .= " AND ($key = '$value')";
@@ -158,15 +162,8 @@ class AbstractCouchbaseCommand extends AbstractCommand
     }
 
 
-
-    protected function removeRowHeadings(array $result) {
-        $retval = array();
-
-        foreach($result as  $row) {
-            $retval[] = json_decode(json_encode(current($row)),true);
-            unset($row);
-        }
-
-        return $retval;
+    protected function removeRowHeadings(array $result)
+    {
+        return array_values($result);
     }
 }
