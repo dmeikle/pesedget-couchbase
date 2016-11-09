@@ -22,8 +22,8 @@ class AbstractCouchbaseListener extends AbstractListener
 {
 
 
-    protected function populateDocument(Document &$document, array $request) {
-        $filepath = __COMPONENT_FOLDER . '/config/schemas.yml';
+    protected function populateDocument(Document &$document, array $request, $_COMPONENT_FOLDER) {
+        $filepath = $_COMPONENT_FOLDER . '/config/schemas.yml';
 
         $schema = $this->getSchema($document, $filepath);
 
