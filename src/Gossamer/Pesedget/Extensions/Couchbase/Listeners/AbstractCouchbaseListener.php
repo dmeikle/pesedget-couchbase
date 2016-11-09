@@ -24,7 +24,7 @@ class AbstractCouchbaseListener extends AbstractListener
 
     protected $bucket;
 
-    protected function setBucket(Bucket $bucket) {
+    protected function setBucket(\CouchbaseBucket $bucket) {
         $this->bucket = $bucket;
     }
 
