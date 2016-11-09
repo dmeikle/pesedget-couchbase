@@ -18,6 +18,9 @@ namespace Gossamer\Pesedget\Extensions\Couchbase\Listeners;
 
 use core\eventlisteners\AbstractListener;
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
+use Gossamer\Pesedget\Extensions\Couchbase\Exceptions\ConfigurationNotFoundException;
+use Gossamer\Pesedget\Extensions\Couchbase\Exceptions\KeyNotFoundException;
+use Gossamer\Pesedget\Utils\YAMLParser;
 
 class AbstractCouchbaseListener extends AbstractListener
 {
@@ -104,5 +107,23 @@ class AbstractCouchbaseListener extends AbstractListener
             return json_decode(json_encode($results->rows), TRUE);
         }
         return json_decode(json_encode($results->value), TRUE);
+    }
+
+
+
+    protected function getSchema(Document $document, $filepath)
+    {
+        $loader = new YAMLParser();
+        $loader->setFilepath($filepath);
+        $config = $loader->loadConfig();
+
+        if (!is_array($config)) {
+            throw new ConfigurationNotFoundException($filepath . ' not found');
+        }
+        if (!array_key_exists($document->getIdentityField(), $config)) {
+            throw new KeyNotFoundException($document->getIdentityField() . ' not found in configuration');
+        }
+
+        return $config[$document->getIdentityField()];
     }
 }
