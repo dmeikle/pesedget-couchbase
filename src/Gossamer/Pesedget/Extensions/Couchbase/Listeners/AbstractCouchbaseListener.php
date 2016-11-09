@@ -22,6 +22,15 @@ use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
 class AbstractCouchbaseListener extends AbstractListener
 {
 
+    protected $bucket;
+
+    protected function setBucket(Bucket $bucket) {
+        $this->bucket = $bucket;
+    }
+
+    protected function getBucket() {
+        return $this->bucket;
+    }
 
     protected function populateDocument(Document &$document, array $request, $_COMPONENT_FOLDER) {
         $filepath = $_COMPONENT_FOLDER . '/config/schemas.yml';
