@@ -77,4 +77,22 @@ class AbstractCouchbaseListener extends AbstractListener
         $counter = $this->getBucket()->counter($document->getDocumentKey(), 1, array('initial' => 100));
         $params['id'] = $document->getDocumentKey() . $counter->value;
     }
+
+
+    protected function resultsToArray($results, $shiftArray = false)
+    {
+        if (!is_object($results)) {
+            return array();
+        }
+        if ($shiftArray) {
+            if (isset($results->rows)) {
+                return current(json_decode(json_encode($results->rows), TRUE));
+            }
+            return current(json_decode(json_encode($results->values), TRUE));
+        }
+        if (isset($results->rows)) {
+            return json_decode(json_encode($results->rows), TRUE);
+        }
+        return json_decode(json_encode($results->value), TRUE);
+    }
 }
