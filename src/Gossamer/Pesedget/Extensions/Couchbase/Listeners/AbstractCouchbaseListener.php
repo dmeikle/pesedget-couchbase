@@ -15,8 +15,9 @@
  */
 
 namespace Gossamer\Pesedget\Extensions\Couchbase\Listeners;
-          
+
 use core\eventlisteners\AbstractListener;
+use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
 
 class AbstractCouchbaseListener extends AbstractListener
 {
