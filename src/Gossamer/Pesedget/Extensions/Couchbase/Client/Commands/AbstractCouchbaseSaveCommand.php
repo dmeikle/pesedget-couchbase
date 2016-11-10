@@ -108,4 +108,22 @@ class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
 
         $params['id'] = uniqid();
     }
+
+
+
+    protected function populateSubArray(Document &$document, array $params, Document $subDocument, $key = null)
+    {
+        if(is_null($key)) {
+            $key = $subDocument->getClassName().'s';
+        }
+        if(!array_key_exists($key, $params)) {
+            return;
+        }
+
+        $this->prepare($subDocument, $params);
+        unset($params['id']);
+        $this->populateDocument($subDocument, $params[$key]);
+
+        $document->set($key, $subDocument->toArray());
+    }
 }
