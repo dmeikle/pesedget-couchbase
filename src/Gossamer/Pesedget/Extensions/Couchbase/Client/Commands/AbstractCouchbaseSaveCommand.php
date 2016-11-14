@@ -113,10 +113,18 @@ class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
 
     protected function populateSubArray(Document &$document, array $params, Document $subDocument, $key = null)
     {
+        //no need to do any work - just go back
+        if(!array_key_exists($key, $params) && !($subDocument instanceof  DefaultValuesInterface)) {
+            return;
+        }
+        //define the key
         if(is_null($key)) {
             $key = $subDocument->getClassName().'s';
         }
-        if(!array_key_exists($key, $params)) {
+        //we have defaults in the event nothing exists - let's use them and go back
+        if(!array_key_exists($key, $params) && $subDocument instanceof  DefaultValuesInterface) {
+            $document->set($key, $subDocument->getDefaults());
+
             return;
         }
 
