@@ -76,16 +76,18 @@ class AbstractCouchbaseCommand extends AbstractCommand
     protected function getBucket($masterBucket = false)
     {
 
-        if ($masterBucket) {
-            $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
+        $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
+        if ($masterBucket === true) {
 
             return $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->getMasterBucketName());
         }
 
+        if($masterBucket === false) {
 
-        $connName = $this->httpRequest->getAttribute('NODE_LEVEL_CLIENT_DATABASE');
+            return $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->getBucketName());
+        }
 
-        return $this->container->get('EntityManager')->getConnection($connName)->getBucket($this->getBucketName());
+        return $this->container->get('EntityManager')->getConnection($connName)->getBucket($masterBucket);
 
     }
 
