@@ -56,11 +56,10 @@ class AbstractCouchbaseListCommand extends AbstractCouchbaseCommand
 
 
 
-
-    protected function getOrderBy(array &$params)
+    protected function getOrderBy(array &$params, $column)
     {
-        $orderBy = '';
-
+        $orderBy = ' ORDER BY ' . $column;
+        
         if (array_key_exists('directive::ORDER_BY', $params)) {
             $column = $params['directive::ORDER_BY'];
 
@@ -74,6 +73,7 @@ class AbstractCouchbaseListCommand extends AbstractCouchbaseCommand
 
         return $orderBy;
     }
+
 
 
     protected function getLimit(array &$params)
