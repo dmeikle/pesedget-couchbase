@@ -157,10 +157,28 @@ class AbstractCouchbaseCommand extends AbstractCommand
             if ($key == 'locale' || strpos($key, 'directive::') !== false) {
                 continue;
             }
-            $retval .= " AND ($key = '$value')";
+            if ($key == 'search') {
+                return $this->getSearchFilter($value);
+            } else {
+                $retval .= " AND ($key = '$value')";
+            }
         }
 
         return $retval;
+    }
+
+    protected function getSearchFilter($keyword)
+    {
+        $retval = '';
+
+        foreach ($this->getSearchFields() as $field) {
+            $retval .= " OR ($field LIKE '%$keyword%')";
+        }
+        if (strlen($retval) == 0) {
+            return;
+        }
+
+        return 'AND (' . (substr($retval, 3)) . ')';
     }
 
 
