@@ -186,4 +186,8 @@ class AbstractCouchbaseCommand extends AbstractCommand
     {
         return array_values($result);
     }
+
+    protected function getSearchFields() {
+        throw new \Exception('searchFields method must be overridden in calling class');
+    }
 }
