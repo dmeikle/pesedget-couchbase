@@ -16,11 +16,9 @@
 
 namespace Gossamer\Pesedget\Extensions\Couchbase\Client\Commands;
 
-use core\commands\POST;
-use core\commands\URI;
-use Gossamer\Pesedget\Database\GossamerDBConnection;
-use Gossamer\Pesedget\Database\SQLInterface;
+
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
+use Gossamer\Pesedget\Extensions\Couchbase\Documents\DefaultValuesInterface;
 
 class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
 {
