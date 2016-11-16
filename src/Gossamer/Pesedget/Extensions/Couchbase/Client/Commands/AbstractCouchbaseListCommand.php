@@ -56,10 +56,12 @@ class AbstractCouchbaseListCommand extends AbstractCouchbaseCommand
 
 
 
-    protected function getOrderBy(array &$params, $column)
+    protected function getOrderBy(array &$params, $column = null)
     {
-        $orderBy = ' ORDER BY ' . $column;
-        
+        $orderBy = (is_null($column) ? '': ' ORDER BY ' . $column . ' ASC');
+
+
+
         if (array_key_exists('directive::ORDER_BY', $params)) {
             $column = $params['directive::ORDER_BY'];
 
