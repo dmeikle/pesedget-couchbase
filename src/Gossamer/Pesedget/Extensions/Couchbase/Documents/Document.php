@@ -92,6 +92,12 @@ class Document
 
             $this->set($key, $value);
         }
+
+        if(array_key_exists('lastModified', $fields)) {
+            if(!array_key_exists('lastModified', $params)) {
+                $this->set('lastModified', date('Y-m-d h:i:s a', time()));
+            }
+        }
     }
 
 
