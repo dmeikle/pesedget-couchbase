@@ -33,6 +33,6 @@ class AbstractCouchbaseGetCommand extends AbstractCouchbaseCommand
 
         $rows = $this->getBucket()->query($query);
 
-        $this->httpRequest->setAttribute($this->entity->getClassName(),  $this->removeRowHeadings($this->resultsToArray($rows)));
+        $this->httpRequest->setAttribute($this->entity->getClassName(),  $this->removeRowHeadings($this->resultsToArray($rows, true)));
     }
 }
