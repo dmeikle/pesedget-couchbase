@@ -16,7 +16,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "monolog/monolog": "1.*",
+    "monolog/monolog": "1.2.*",
     "gossamer/caching": "dev-master",
     "gossamer/pesedget": "dev-master"
   },

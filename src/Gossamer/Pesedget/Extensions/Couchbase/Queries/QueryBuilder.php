@@ -61,7 +61,7 @@ class QueryBuilder
     private $cacheManager = null;
     private $cachePath;
 
-    public function __construct(CacheManager $cacheManager, $cachePath)
+    public function __construct(CacheManager $cacheManager = null, $cachePath = null)
     {
         $this->cacheManager = $cacheManager;
         $this->cachePath = $cachePath;
@@ -91,5 +91,28 @@ class QueryBuilder
         }
                 
     }
+
+    /**
+     * assigns the values of the passed in params to the builder.
+     *
+     * @param array $params - the values to assign
+     * @param array|null $fields - the field names to look for in the array
+     */
+    public function getFilter(array $params, array $fields = null) {
+
+        $retval = '';
+        
+        foreach($params as $key => $value) {
+            if(!in_array($key, $this->fields)) {
+                continue;
+            }
+
+            $retval .= " and ($key = '$value')";
+        }
+
+        return $retval;
+    }
+    
+    
 }
     

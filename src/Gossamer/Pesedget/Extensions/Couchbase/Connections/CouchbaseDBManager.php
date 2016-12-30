@@ -137,6 +137,8 @@ class CouchbaseDBManager
 
         return $retval;
     }
+    
+    
 
 
     protected function removeRowHeadings(array $result)
