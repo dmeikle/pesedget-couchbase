@@ -22,7 +22,7 @@ class SetInactiveCommand  extends AbstractCouchbaseCommand
 
     public function execute($params = array(), $request = array())
     {
-        $queryString = "UPDATE " . $this->getBucketName() . " SET isActive = '0' use keys ('" . $request['id'] . "')";
+        $queryString = "UPDATE " . $this->getBucketName() .  " use keys ('" . $request['id'] . "') SET isActive = '0'";
 
         $query = \CouchbaseN1qlQuery::fromString($queryString);
 
