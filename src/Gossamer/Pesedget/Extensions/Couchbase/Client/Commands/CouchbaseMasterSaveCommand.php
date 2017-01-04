@@ -20,7 +20,7 @@ namespace Gossamer\Pesedget\Extensions\Couchbase\Client\Commands;
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\DefaultValuesInterface;
 
-class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
+class CouchbaseMasterSaveCommand extends AbstractCouchbaseCommand
 {
 
     public function execute($params = array(), $requestParams = array())
