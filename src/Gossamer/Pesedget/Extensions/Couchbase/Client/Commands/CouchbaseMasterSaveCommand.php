@@ -20,7 +20,7 @@ namespace Gossamer\Pesedget\Extensions\Couchbase\Client\Commands;
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\DefaultValuesInterface;
 
-class CouchbaseMasterSaveCommand extends AbstractCouchbaseCommand
+class CouchbaseMasterSaveCommand extends AbstractCouchbaseSaveCommand
 {
 
     public function execute($params = array(), $requestParams = array())
@@ -31,7 +31,7 @@ class CouchbaseMasterSaveCommand extends AbstractCouchbaseCommand
 
         $id = $requestParams['id'];
         $this->getBucket(true)->upsert($id, $this->entity->toArray());
-        $result = $this->getBucket()->get($id);
+        $result = $this->getBucket(true)->get($id);
 
         $this->httpRequest->setAttribute($this->entity->getClassName(), json_decode(json_encode($result->value),TRUE));
     }
