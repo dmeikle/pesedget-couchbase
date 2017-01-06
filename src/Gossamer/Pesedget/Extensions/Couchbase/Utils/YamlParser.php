@@ -6,7 +6,7 @@
  * Time: 11:01 PM
  */
 
-namespace Gossamer\Pesedget\Extensions\Couchbase\Client\Utils;
+namespace Gossamer\Pesedget\Extensions\Couchbase\Utils;
 
 
 
