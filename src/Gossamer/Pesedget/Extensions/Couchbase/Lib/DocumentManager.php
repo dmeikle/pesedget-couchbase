@@ -17,7 +17,7 @@
 namespace Gossamer\Pesedget\Extensions\Couchbase\Lib;
 
 
-use Gossamer\Pesedget\Extensions\Couchbase\Client\Utils\YAMLParser;
+use Gossamer\Pesedget\Extensions\Couchbase\Utils\YAMLParser;
 use Gossamer\Pesedget\Extensions\Couchbase\Documents\Document;
 use Gossamer\Pesedget\Extensions\Couchbase\Exceptions\ConfigurationNotFoundException;
 use Gossamer\Pesedget\Extensions\Couchbase\Exceptions\KeyNotFoundException;
