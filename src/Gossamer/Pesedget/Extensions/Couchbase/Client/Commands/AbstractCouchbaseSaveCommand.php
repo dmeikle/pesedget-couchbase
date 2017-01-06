@@ -32,8 +32,10 @@ class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
         $id = $requestParams['id'];
         $this->getBucket()->upsert($id, $this->entity->toArray());
         $result = $this->getBucket()->get($id);
+        $object =  array();
+        $object[] = json_decode(json_encode($result->value),true);
 
-        $this->httpRequest->setAttribute($this->entity->getClassName(), json_decode(json_encode($result->value),TRUE));
+        $this->httpRequest->setAttribute($this->entity->getClassName(), $object);
     }
 
     protected function populateDocument(Document &$document, array $request) {

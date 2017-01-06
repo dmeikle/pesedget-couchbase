@@ -32,8 +32,10 @@ class CouchbaseMasterSaveCommand extends AbstractCouchbaseSaveCommand
         $id = $requestParams['id'];
         $this->getBucket(true)->upsert($id, $this->entity->toArray());
         $result = $this->getBucket(true)->get($id);
+        $object =  array();
+        $object[] = json_decode(json_encode($result->value),true);
 
-        $this->httpRequest->setAttribute($this->entity->getClassName(), json_decode(json_encode($result->value),TRUE));
+        $this->httpRequest->setAttribute($this->entity->getClassName(), $object);
     }
 
 
