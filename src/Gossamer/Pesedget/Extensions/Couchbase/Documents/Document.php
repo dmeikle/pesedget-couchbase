@@ -94,10 +94,10 @@ class Document
 
         foreach ($params as $key => $value) {
 
-            if (is_array($value)) {
-                $this->populateArray($key, $value);
-                continue;
-            }
+//            if (is_array($value)) {
+//                $this->populateArray($key, $value);
+//                continue;
+//            }
             if (!in_array($key, $this->fields)) {
                 continue;
             }
@@ -112,38 +112,25 @@ class Document
         }
     }
 
-    /**
-     * @param $documentKey
-     * @param array $params
-     * @param array|null $fields
-     *
-     * used for populating a document that contains an array of
-     * records, not just a single tier set of values
-     */
-    public function populateArray($documentKey, array $params, array $fields = null)
+    public function populateArray(array $params, array $fields = null)
     {
         if (!is_null($fields)) {
             $this->fields = $fields;
         }
 
         $retval = array();
-        foreach ($params as $key => $value) {
-            if (!in_array($key, $this->fields)) {
+        foreach ($params as $key => $row) {
+            $newRow = array_intersect_key($row, array_flip($this->fields));
 
-                continue;
+            if (array_key_exists('lastModified', $this->fields)) {
+                if (!array_key_exists('lastModified', $newRow)) {
+                    $newRow['lastModified'] = date('Y-m-d h:i:s a', time());
+                }
             }
-
-            $retval[$key] = $value;
-
+            $retval[] = $newRow;
         }
 
-        if (array_key_exists('lastModified', $fields)) {
-            if (!array_key_exists('lastModified', $params)) {
-                $retval['lastModified'] = date('Y-m-d h:i:s a', time());
-            }
-        }
-
-        $this->setArray($documentKey, $retval);
+        $this->values = $retval;
     }
 
 
@@ -184,12 +171,6 @@ class Document
         return null;
     }
 
-    /**
-     * @param $key
-     * @param $value
-     *
-     * used for setting a standard value to the document
-     */
     public function set($key, $value)
     {
         if (!$this->documentChanged && (!array_key_exists($key, $this->fields) || !isset($this->fields[$key]) || $this->fields[$key] != $value)) {
@@ -199,12 +180,6 @@ class Document
         $this->values[$key] = $value;
     }
 
-    /**
-     * @param $key
-     * @param $value
-     *
-     * used for adding an array of records to the document
-     */
     public function setArray($key, $value)
     {
         if (count($value) == 0) {
