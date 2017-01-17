@@ -34,7 +34,8 @@ class Document
     protected $values = array();
 
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->tablename = $this->stripNamespacing(get_class($this)) . 's';
     }
 
@@ -45,29 +46,34 @@ class Document
         return $reflector->getNamespaceName();
     }
 
-    private function stripNamespacing($namespacedEntity) {
+    private function stripNamespacing($namespacedEntity)
+    {
         $chunks = explode('\\', $namespacedEntity);
 
         return array_pop($chunks);
     }
 
-    public function getIdentityField(){
+    public function getIdentityField()
+    {
         return $this->tablename;
     }
 
-    public function getDocumentKey(){
+    public function getDocumentKey()
+    {
         return strtolower($this->tablename) . '::' . $this->getId();
     }
 
-    public function getId() {
-        if(!array_key_exists('id',$this->values)) {
+    public function getId()
+    {
+        if (!array_key_exists('id', $this->values)) {
             return '';
         }
 
         return $this->values['id'];
     }
 
-    public function getClassName() {
+    public function getClassName()
+    {
         $reflect = new \ReflectionClass($this);
 
         return $reflect->getShortName();
@@ -79,46 +85,87 @@ class Document
      * @param array $params - the values to assign
      * @param array|null $fields - the field names to look for in the array
      */
-    public function populate(array $params, array $fields = null) {
+    public function populate(array $params, array $fields = null)
+    {
 
-        if(!is_null($fields)) {
+        if (!is_null($fields)) {
             $this->fields = $fields;
         }
 
-        foreach($params as $key => $value) {
-            if(!in_array($key, $this->fields)) {
+        foreach ($params as $key => $value) {
+
+            if (is_array($value)) {
+                $this->populateArray($key, $value);
+                continue;
+            }
+            if (!in_array($key, $this->fields)) {
                 continue;
             }
 
             $this->set($key, $value);
         }
 
-        if(array_key_exists('lastModified', $fields)) {
-            if(!array_key_exists('lastModified', $params)) {
+        if (array_key_exists('lastModified', $fields)) {
+            if (!array_key_exists('lastModified', $params)) {
                 $this->set('lastModified', date('Y-m-d h:i:s a', time()));
             }
         }
     }
 
+    /**
+     * @param $documentKey
+     * @param array $params
+     * @param array|null $fields
+     *
+     * used for populating a document that contains an array of
+     * records, not just a single tier set of values
+     */
+    public function populateArray($documentKey, array $params, array $fields = null)
+    {
+        if (!is_null($fields)) {
+            $this->fields = $fields;
+        }
 
-    public function populateNested(array $params, array $schema) {
+        $retval = array();
+        foreach ($params as $key => $value) {
+            if (!in_array($key, $this->fields)) {
+
+                continue;
+            }
+
+            $retval[$key] = $value;
+
+        }
+
+        if (array_key_exists('lastModified', $fields)) {
+            if (!array_key_exists('lastModified', $params)) {
+                $retval['lastModified'] = date('Y-m-d h:i:s a', time());
+            }
+        }
+
+        $this->setArray($documentKey, $retval);
+    }
+
+
+    public function populateNested(array $params, array $schema)
+    {
         //first do the main fields
 
-        foreach($schema['fields'] as $key) {
-            if(array_key_exists($key, $params)) {
+        foreach ($schema['fields'] as $key) {
+            if (array_key_exists($key, $params)) {
                 $this->set($key, $params[$key]);
             }
         }
-$joins = $schema['joins'];
+        $joins = $schema['joins'];
         //now do the join fields
-        foreach($joins[0] as $documentName => $fields) {
+        foreach ($joins[0] as $documentName => $fields) {
 
-            if(array_key_exists($documentName, $params)) {
+            if (array_key_exists($documentName, $params)) {
                 $subarray = array();
 
-                foreach($params[$documentName] as $key => $value) {
-                    
-                    if(in_array($key, $fields)) {
+                foreach ($params[$documentName] as $key => $value) {
+
+                    if (in_array($key, $fields)) {
                         $subarray[$key] = $value;
                     }
                 }
@@ -126,8 +173,6 @@ $joins = $schema['joins'];
             }
         }
     }
-
-
 
 
     public function get($key)
@@ -139,23 +184,52 @@ $joins = $schema['joins'];
         return null;
     }
 
-    public function set($key, $value) {
-        if(!$this->documentChanged && (!array_key_exists($key, $this->fields) || !isset($this->fields[$key]) || $this->fields[$key] != $value)) {
+    /**
+     * @param $key
+     * @param $value
+     *
+     * used for setting a standard value to the document
+     */
+    public function set($key, $value)
+    {
+        if (!$this->documentChanged && (!array_key_exists($key, $this->fields) || !isset($this->fields[$key]) || $this->fields[$key] != $value)) {
             $this->documentChanged = true;
         }
 
         $this->values[$key] = $value;
     }
 
-    public function getAll() {
+    /**
+     * @param $key
+     * @param $value
+     *
+     * used for adding an array of records to the document
+     */
+    public function setArray($key, $value)
+    {
+        if (count($value) == 0) {
+            return;
+        }
+
+        if (!$this->documentChanged && (!array_key_exists($key, $this->fields) || !isset($this->fields[$key]) || $this->fields[$key] != $value)) {
+            $this->documentChanged = true;
+        }
+
+        $this->values[$key] = $value;
+    }
+
+    public function getAll()
+    {
         return $this->values;
     }
 
-    public function toJson() {
+    public function toJson()
+    {
         return json_encode($this->getAll());
     }
 
-    public function toArray() {
+    public function toArray()
+    {
         return $this->getAll();
     }
 }
