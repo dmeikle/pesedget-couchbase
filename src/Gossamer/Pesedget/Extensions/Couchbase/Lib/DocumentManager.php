@@ -32,6 +32,8 @@ class DocumentManager
 
     private $documents = array();
 
+    protected $container = null;
+
     public function __construct(\CouchbaseBucket $bucket, YAMLParser $parser, $sitePath)
     {
         $this->bucket = $bucket;
@@ -39,10 +41,13 @@ class DocumentManager
         $this->sitePath = $sitePath;
     }
 
+    public function setContainer($container) {
+        $this->container = $container;
+    }
+
     public function getDocument(Document $document, $id)
     {
         $schema = $this->getDocumentSchema($document);
-
     }
 
     protected function getDocumentSchema(Document $document) {
