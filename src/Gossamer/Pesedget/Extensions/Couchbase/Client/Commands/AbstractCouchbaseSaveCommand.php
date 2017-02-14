@@ -134,4 +134,54 @@ class AbstractCouchbaseSaveCommand extends AbstractCouchbaseCommand
 
         $document->set($key, $subDocument->toArray());
     }
+
+    /**
+     * @param Document $document
+     * @param array $params
+     * @param Document $subDocument
+     * @param null $key
+     *
+     * used for documents that have a nested array of ROWS to them
+     *
+     * eg:
+     * Member:
+     *  MemberRoles:
+     *      {
+     *          date: 2014-02-01
+     *          role: regular_member
+     *      }
+     *      {
+     *          date: 2014-02-20
+     *          role: special_member
+     *      }
+     *
+     * In this instance, MemberRoles is a list of rows - we need to handle them differently than
+     * populating a standard document
+     */
+    protected function populateSubArrayNestedValues(Document &$document, array $params, Document $subDocument, $key = null)
+    {
+        //no need to do any work - just go back
+        if(!array_key_exists($key, $params) && !($subDocument instanceof  DefaultValuesInterface)) {
+            return;
+        }
+        //define the key
+        if(is_null($key)) {
+            $key = $subDocument->getClassName().'s';
+        }
+
+        //we have defaults in the event nothing exists - let's use them and go back
+        if(!array_key_exists($key, $params) && $subDocument instanceof  DefaultValuesInterface) {
+            $document->set($key, $subDocument->getDefaults());
+
+            return;
+        }
+
+        $listOfDocuments = array();
+        foreach($params[$key] as $row) {
+            $this->populateDocument($subDocument, $row);
+            $listOfDocuments[] = $subDocument->toArray();
+        }
+
+        $document->set($key, $listOfDocuments);
+    }
 }
