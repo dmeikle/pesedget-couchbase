@@ -167,6 +167,22 @@ class AbstractCouchbaseCommand extends AbstractCommand
         return $retval;
     }
 
+    /**
+     * @param array $params
+     * @return string|void
+     *
+     * loads t
+     */
+    protected function mapFilter(array $params, Document $document, $componentFolder) {
+        $filepath = $componentFolder . '/config/schemas.yml';
+
+        $schema = $this->getSchema($document, $filepath);
+
+        $keys = array_intersect_key($params, array_flip($schema));
+
+        return $this->getFilter($keys);
+    }
+
     protected function getSearchFilter($keyword)
     {
         $retval = '';
